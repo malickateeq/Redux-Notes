@@ -14,8 +14,11 @@
 VerSus
 > Customer > 2. the form > 3. form receiver > 4. Departments > 5. Compiled Department Data
 
-# 1. Actions
+## Analogy In Action
+
+### 1. Actions
 - Action is just like submiting a data with its type / relevance. Then send it to Dispatcher to broadcast it to the Reducers.
+- Actions describe how we want to change data in our application.
 
 ```js
 // People Dropping off form (Action Creator)
@@ -50,7 +53,7 @@ const createClaim = (name, amount) => {
 ```
 
 
-# 2. Reducers:
+### 2. Reducers:
 - The overall goal of reducers is to take some (existing data AND action) and then modify and return that existing data based on the type of an action.
 
 ```js
@@ -67,7 +70,6 @@ const claimsHistory = (oldListOfClaims = [], action) => {  // Action is just Lik
       return oldListOfClaims;
     }
 };
-
 
 const accounting = (bagOfMoney = 0, action) => {
     if(action.type == "CREATE_CLAIM")
@@ -103,7 +105,7 @@ const policies = (listOfPolicies = [], action) => {
 };
 ```
 
-# 3. Redux
+### 3. Redux
 - Redux in itself provides 1. centeral Store, 2. combineReducers, 3. applyMiddlewares, 4. bindActionCreators and 5. composing them off.
 - So initially we take from Redux: `const {createStore, combineReducers} = Redux`
 - A store in Redux is essentially the assembly of a collection of different Reducers and Action Creators.
@@ -120,7 +122,7 @@ const ourDepartments = combineReducers({
 const store = createStore(ourDepartments);
 ```
 
-# 4. Dispatch
+### 4. Dispatch
 - Store will dispatch the actions to all departments, whoever needs them.
 
 ```js
@@ -133,3 +135,9 @@ store.dispatch(action);
 // One Centeral Store for all data
 console.log(store.getState());
 ```
+
+### Key Points
+- There's no way that we can directly modify the store contents. The only way is through actions > reducers.
+
+# React + Redux
+
