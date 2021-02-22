@@ -6,6 +6,30 @@
 
 # General
 
+## `async` `await`
+
+- `async` will always return a promise.
+- To To actually consume the value returned when the promise fulfills, since it is returning a promise, we could use a .then() block:
+- So the async keyword is added to functions to tell them to return a promise rather than directly returning the value.
+```js
+function hello() { return "Hello" };
+hello();  // Output: Hello;
+
+let hello = async function() { return "Hello" };
+hello();  // Output: Promise {<fulfilled>: "Hello"}
+
+// To consume output/response
+hello().then(console.log)
+```
+
+- `await` await only works inside async functions
+- `await` can be put in front of any async promise-based function to pause your code on that line until the promise fulfills, then return the resulting value.
+
+```js
+async function hello() { return greeting = await Promise.resolve("Hello"); };
+hello().then(console.log);  // Hello 
+```
+
 ## Named export
 - A named export allows us to export many functions from a single file.
 - To achieve this just place `export` keyword before each function.
@@ -32,6 +56,7 @@ VerSus
 ### 1. Actions
 - Action is just like submiting a data with its type / relevance. Then send it to Dispatcher to broadcast it to the Reducers.
 - Actions describe how we want to change data in our application.
+- Actions must return an JS object hence it can't be markes as `async`. As `async` will first return a request then other code exec.
 
 ```js
 // People Dropping off form (Action Creator)
@@ -306,3 +331,22 @@ export default connect(mapStatetoProps, {
 // This is because we need to tell Redux that this function call belongs to you. It can not listen to all function calls and decide on which call it need to perform some action.
 // It can not automatically dispatch to the reducers.
 ```
+
+# ~~~~~~~~~~ Detailed Redux ~~~~~~~~~~
+
+## General Data Loading In Redux
+
+1. Component rendered onto the screen
+2. Component's `componentDidMount` lifecycle method gets called
+3. We call action creator from `componentDidMount`
+4. Action creator runs code to make an API request
+5. API respond with data
+6. Action creator returns an `action` with the fetched data on the payload property
+7. Some reducer sees the action, returns the data off the payload
+8. Because we generated some new state object, redux/react-redux cause our React app to be rerendered
+
+### General Practices
+* In general, components are responsible for fetching the data they need by calling actions.
+* Action creators are usually responsible for making API requests.
+* When we get data in store then we use `mapStateToProps` (data from `store` -> `components`) to get data in component's props
+

@@ -1,11 +1,13 @@
+import jsonPlaceholder from "../apis/jsonPlaceholder";
 
-// Action Creator
-export const selectSong = (song) => 
+export const fetchPosts = async () =>
 {
-    // Return an action
+    const response = await jsonPlaceholder.get("/posts");
+
     return {
-        type: "SONG_SELECTED",
-        payload: song
+        type: "FETCH_POSTS",
+        payload: resposne
     };
 };
+
 
