@@ -369,4 +369,4 @@ export default connect(mapStatetoProps, {
 - Can make Action Creators to return action `objects` or `functions`.
 - Imp!! Redux thunk will wait for async call then manually `dispatch` the action creators to the Reducers.
 
-![Redux Thunk]("public/git/thunk.png");
+![Redux Thunk](public/git/thunk.png);
