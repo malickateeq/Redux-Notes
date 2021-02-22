@@ -357,6 +357,28 @@ export default connect(mapStatetoProps, {
 ### Async Action Creator
 - Async action creators runs async code therein. Can execute APIs etc.
 - It requires `redux-thunk` middleware to make `async` action creator. `npm install redux-thunk`
+```js
+export const fetchPosts = () =>
+{
+  // We can use `async` with reduc-thunk function
+  return async function(dispatch, getState)// 2nd arg optional
+  {
+      const response = await jsonPlaceholder.get("/posts");
+      dispatch({
+          type: "FETCH_POSTS",
+          payload: response
+      });
+  }
+};
+
+// Pro: If we refactor this code ;)
+// Here we're defining a function which is returning a function.
+export const fetchPosts = () => async dispatch => {
+      const response = await jsonPlaceholder.get("/posts");
+      dispatch({ type: "FETCH_POSTS", payload: response });
+};
+
+```
 
 ## Middlewares in Redux
 > Action Creator > Action > Dispatch > Middleware > Reducers > State
@@ -365,8 +387,27 @@ export default connect(mapStatetoProps, {
 - It has the ability to `STOP`, `MODIFY`, or otherwise mess around with actions.
 - Most popular middleware in redux is for dealing with async actions is `redux-thunk`
 
-## Redux Thunk
+### Redux Thunk (14 Lines of code :P)
 - Can make Action Creators to return action `objects` or `functions`.
 - Imp!! Redux thunk will wait for async call then manually `dispatch` the action creators to the Reducers.
+- `thunk` will pass `dispatch` and `useState` to the function.
 
-![Redux Thunk](public/git/thunk.png);
+![Redux Thunk](public/git/thunk.png)
+
+- Applying the middleware
+```js
+import thunk from "redux-thunk";
+ReactDOM.render(
+    <Provider store={createStore(reducers, applyMiddleware(thunk) )}>
+        <App />
+    </Provider>,
+    document.getElementById("root")
+);
+```
+
+## Redcuers
+
+### Rules of Reducer
+1. Reducer must return any value besides 'undefined'.
+2. 
+
