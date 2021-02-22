@@ -57,6 +57,7 @@ VerSus
 - Action is just like submiting a data with its type / relevance. Then send it to Dispatcher to broadcast it to the Reducers.
 - Actions describe how we want to change data in our application.
 - Actions must return an JS object hence it can't be markes as `async`. As `async` will first return a request then other code exec.
+- There're `async` Action Creators which are used to fetch data from APIs or execure `async` code.
 
 ```js
 // People Dropping off form (Action Creator)
@@ -349,4 +350,23 @@ export default connect(mapStatetoProps, {
 * In general, components are responsible for fetching the data they need by calling actions.
 * Action creators are usually responsible for making API requests.
 * When we get data in store then we use `mapStateToProps` (data from `store` -> `components`) to get data in component's props
+* We use async action creators to fetch data from APIs.
 
+## Action Creators
+
+### Async Action Creator
+- Async action creators runs async code therein. Can execute APIs etc.
+- It requires `redux-thunk` middleware to make `async` action creator. `npm install redux-thunk`
+
+## Middlewares in Redux
+> Action Creator > Action > Dispatch > Middleware > Reducers > State
+
+- A middleware is a JS function that gets called with every action we dispatch.
+- It has the ability to `STOP`, `MODIFY`, or otherwise mess around with actions.
+- Most popular middleware in redux is for dealing with async actions is `redux-thunk`
+
+## Redux Thunk
+- Can make Action Creators to return action `objects` or `functions`.
+- Imp!! Redux thunk will wait for async call then manually `dispatch` the action creators to the Reducers.
+
+![Redux Thunk]("public/git/thunk.png");
