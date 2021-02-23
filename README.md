@@ -41,6 +41,47 @@ export const myFunc = (){};
 import {myFunc, myFunc2, so on..} from "someFile.js";
 ```
 
+## Mutation in JS
+- Mutation is the modifying (add, update, delete) of contents/data of an array, object or otherwise.
+```js
+const colors = ['red', 'blue'];
+colors.push('yellow');  // mutation!!!
+colors.pop(); // remove yellow and return it // mutation!!!
+colors[0] = 'reddish'; // mutation!!!
+```
+
+* Pro Tips!
+- In JS strings and numbers are immutable values. Below is the demonstration
+```js
+const name = "Malik";
+name[0]; // Output: Malik
+
+// Try to mutate
+name[0] = "Z";
+name; // Output: Malik; It remains the same 
+
+// So no need to worry about mutation in strings or nunbers only in objects and array mutation is possible.
+```
+
+## Comparisons in JS (Pro)
+
+- In strings and numbers === compares values.
+- In arrays and objects it compares for the exact same arrays or objects stored in memory reference.
+
+```js
+// 1. Here it is comparing values 
+1 === 1   // Output: true
+"hi" === "hi" // Output: true
+
+// But in arrays and objects
+const numbers = [1, 2, 3];
+numbers === numbers // Output: true
+// !!!
+numbers === [1, 2, 3]; // Output: false
+```
+
+
+
 # Redux Cycle
 
 > 1. Action Creator > 2. Action > 3. Dispatch > 4. Reducers > 5. State 
@@ -374,8 +415,8 @@ export const fetchPosts = () =>
 // Pro: If we refactor this code ;)
 // Here we're defining a function which is returning a function.
 export const fetchPosts = () => async dispatch => {
-      const response = await jsonPlaceholder.get("/posts");
-      dispatch({ type: "FETCH_POSTS", payload: response });
+  const response = await jsonPlaceholder.get("/posts");
+  dispatch({ type: "FETCH_POSTS", payload: response });
 };
 
 ```
@@ -408,6 +449,69 @@ ReactDOM.render(
 ## Redcuers
 
 ### Rules of Reducer
-1. Reducer must return any value besides 'undefined'.
-2. 
 
+0. Reducers get called automatically the first time for once `initialization` and then when it manually called.
+1. Reducer must return any value besides 'undefined'.
+2. Reducers produce 'state' or data to be used inside the app using only previous state and the action.
+3. Upon initialization provide default value as `null` instead of `undefined`
+4. We shall not make API request or other dummy data inside Reducers. Allowed (previos-state + action)
+5. Must not mutate its input `state` argument.
+
+```js
+const selectedContracts = (contracts = null, action) => // initially contracts will be null isntead of undefined 
+{
+  // 1. first initialization call
+  initialization...
+  // 2. No api requests or other data
+  NO API requests
+  // 3. Must return valid data
+  return except-undefined
+  // 4. Pro: Must not mutate its `state` object. It is possible to mutate but will cause various problems
+  // Mostly the `react-redux` is handling it in a bit different way. If changed it is returning new values for all reducers otherwise only updaing relevant.
+  // Bottom line it will affect rest of the reducers. Cause the entire application to rerender.
+}
+```
+
+### Safe State Updates in Reducers
+
+- It will and should return a brand new sate object.
+
+#### Arrays
+
+1. Removing an element
+```js
+state.filter(element => element === "check");
+```
+
+2. Adding an element
+```js
+[...state, 'new Values'];
+```
+
+3. Replacing an element
+```js
+state.map(element => element === "check" ? 'newValue' : element);
+```
+
+#### Objects
+
+1. Updating a property
+```js
+{ ...state, name: 'malik' }
+```
+
+2. Adding a property
+```js
+{ ...state, age: 97 }
+```
+
+2. Removing a property
+```js
+// Not recommended
+{ ...state, age: undefined }
+// OR be a Pro ;) recommended
+_.omit(state, 'age');
+// _.omit() is a lodash library
+```
+
+- Lodash is a popular JS library for working with objects, arrays, functions, numbers etc.
