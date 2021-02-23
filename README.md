@@ -80,6 +80,16 @@ numbers === numbers // Output: true
 numbers === [1, 2, 3]; // Output: false
 ```
 
+## _.memoize(arg1, arg2)
+- memoize is an helper function of lodash library.
+- It execute network request for a function only once with the same arguments.
+- Next time memoize return the already fetched response.
+
+## `find` method in JS
+```js
+const colors = ['red', 'green', 'blue'];
+colors.find(color => color === blue); // Will return 'blue'
+```
 
 
 # Redux Cycle
