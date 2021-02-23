@@ -515,3 +515,11 @@ _.omit(state, 'age');
 ```
 
 - Lodash is a popular JS library for working with objects, arrays, functions, numbers etc.
+
+### Writing Code in Reducers - Practices
+- We usually use `switch` inside reducers instead of `if-else`
+
+```js
+  switch
+
+```
