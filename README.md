@@ -403,34 +403,6 @@ export default connect(mapStatetoProps, {
 * When we get data in store then we use `mapStateToProps` (data from `store` -> `components`) to get data in component's props
 * We use async action creators to fetch data from APIs.
 
-## Action Creators
-
-### Async Action Creator
-- Async action creators runs async code therein. Can execute APIs etc.
-- It requires `redux-thunk` middleware to make `async` action creator. `npm install redux-thunk`
-```js
-export const fetchPosts = () =>
-{
-  // We can use `async` with reduc-thunk function
-  return async function(dispatch, getState)// 2nd arg optional
-  {
-      const response = await jsonPlaceholder.get("/posts");
-      dispatch({
-          type: "FETCH_POSTS",
-          payload: response
-      });
-  }
-};
-
-// Pro: If we refactor this code ;)
-// Here we're defining a function which is returning a function.
-export const fetchPosts = () => async dispatch => {
-  const response = await jsonPlaceholder.get("/posts");
-  dispatch({ type: "FETCH_POSTS", payload: response });
-};
-
-```
-
 ## Middlewares in Redux
 > Action Creator > Action > Dispatch > Middleware > Reducers > State
 
@@ -456,7 +428,90 @@ ReactDOM.render(
 );
 ```
 
+## Action Creators
+
+### Async Action Creator
+- Async action creators runs async code therein. Can execute APIs etc.
+- It requires `redux-thunk` middleware to make `async` action creator. `npm install redux-thunk`
+```js
+export const fetchPosts = () =>
+{
+  // We can use `async` with reduc-thunk function
+  return async function(dispatch, getState)// 2nd arg optional
+  {
+      const response = await jsonPlaceholder.get("/posts");
+      dispatch({
+          type: "FETCH_POSTS",
+          payload: response
+      });
+  }
+};
+
+// Pro: If we refactor this code ;)
+// Here we're defining a function which is returning a function.
+export const fetchPosts = () => async dispatch => {
+  const response = await jsonPlaceholder.get("/posts");
+  dispatch({ type: "FETCH_POSTS", payload: response });
+};
+```
+
+## Thunk Action Creator
+
+- Thunk will take-over this action creator when it is completed it will dispatch it to reducers
+- Arg1: The first argument is the `dispatch` function provided by thunk to pipeline functions.
+- Arg2: The `getState` 2nd argument is also a function to access entire state data
+- You may not call `store.getState()` while the reducer is executing. 
+
+```js
+export const fetchPosts = () =>
+{
+    // We can use `async` with reduc-thunk function
+    return async function(dispatch, getState)   // 2nd arg optional
+    {
+        const response = await jsonPlaceholder.get("/posts");
+        dispatch({
+            type: "FETCH_POSTS",
+            payload: response.data
+        });
+    }
+};
+```
+
+## Thunk Action Creator Delegation / Calling action creators from an action creator
+- This method will show you how to pipeline action creators using thunk
+- Whenever we `dispatch` a function `redux-thunk` will automatically pick it up and invoke it.
+```js
+export const fetchPostsAndUsers = () =>
+{
+    return async (dispatch, getState) =>
+    {
+        // Calling another action creator inside an action creator and then dispatching it.
+        // `await` is to make sure wait for this action to complete then go next
+        // Here await is waiting for this API request to complete. "jsonPlaceholder.get("/posts")"; Network request wait
+        // If you remove `await` it will continue execyting next line without the network request complete response.
+        await dispatch(fetchPosts());
+
+        // Lodash library to fetch all `userId` then get unique array in them 
+        const userIds = _.uniq(_.map(getState().posts, 'userId'));
+        userIds.forEach( id => 
+        {
+            // Its optional to put `await` here as I don't care when it'll complete. Coz this data is not dependent on next execution line.
+            dispatch(fetchUser(id));
+        });
+
+        // Or a compact rafactor for above 6 Lines
+        _.chain(getState().posts)
+        .map("userId")  // Inject 1st agr (posts) automatically by lodash
+        .uniq() // Inject 1st agr (result from previos function map()) automatically by lodash
+        .forEach(id => dispatch(fetchUser(id))) // Inject 1st agr (result from previos function uniq()) automatically by lodash
+        .value();   // mandatory at the end to execute the _.chain() method.
+    }
+};
+```
+
 ## Redcuers
+
+- The main purpose of it is to store data in store when it is invoked.
 
 ### Rules of Reducer
 
@@ -528,8 +583,16 @@ _.omit(state, 'age');
 
 ### Writing Code in Reducers - Practices
 - We usually use `switch` inside reducers instead of `if-else`
-
+- The first argument `state` will always be the previous value in `state/store`
 ```js
-  switch
-
+export default (state = [], action) =>
+{
+    switch(action.type)
+    {
+        case "FETCH_POSTS":
+            return action.payload;
+        default:
+            return state;
+    }
+}
 ```
