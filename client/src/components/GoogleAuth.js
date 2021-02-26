@@ -1,14 +1,9 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import {connect} from "react-redux";
+import {signIn, signOut} from "../actions";
 
-export default class GoogleAuth extends Component 
+class GoogleAuth extends Component 
 {
-    state = { isSignedIn: null };
-
-    onAuthChange()
-    {
-        this.setState( {isSignedIn: this.auth.isSignedIn.get()} );
-    }
-
     componentDidMount()
     {
         window.gapi.load("client:auth2", () => {
@@ -17,22 +12,38 @@ export default class GoogleAuth extends Component
                 scope: 'email'
             }).then( () => {
                 this.auth = window.gapi.auth2.getAuthInstance();
-                this.setState({ isSignedIn: this.auth.isSignedIn.get() });
-                this.auth.isSignedIn.listen( this.onAuthChange );
+                this.onAuthChange(this.auth.isSignedIn.get());
+                this.auth.isSignedIn.listen( this.onAuthChange() );
+            }).catch( () => {
+                console.error("Failed!!!");
             });
         });
     }
-    onSignInClick ()
+
+    onSignInClick = () =>
     {
         this.auth.signIn();
     }
-    onSignOutClick()
+    onSignOutClick = () =>
     {
         this.auth.signOut();
     }
-    renderAuthButton()
+    
+    onAuthChange = isSignedIn =>
     {
-        if(this.state.isSignedIn === null)
+        if(isSignedIn)
+        {
+            this.props.signIn(this.auth.currentUser.get().getId());
+        }
+        else
+        {
+            this.props.signOut();
+        }
+    }
+
+    renderAuthButton = () =>
+    {
+        if(this.props.isSignedIn === null)
         {
             return (
                 <div className="btn btn-outline-primary">
@@ -40,10 +51,10 @@ export default class GoogleAuth extends Component
                 </div>
             );
         }
-        else if(this.state.isSignedIn === true)
+        else if(this.props.isSignedIn)
         {
             return (
-                <button onClick={ ()=>{ this.onSignOutClick() } } className="btn btn-outline-danger">
+                <button onClick={ () => this.onSignOutClick() } className="btn btn-outline-danger">
                     G+ Sign Out
                 </button>
             );
@@ -51,7 +62,7 @@ export default class GoogleAuth extends Component
         else
         {
             return (
-                <button onClick={ ()=>{ this.onSignInClick() } } className="btn btn-outline-primary">
+                <button onClick={ () => this.onSignInClick() } className="btn btn-outline-primary">
                     G+ Sign In
                 </button>
             );
@@ -65,3 +76,10 @@ export default class GoogleAuth extends Component
         )
     }
 }
+
+const mapStateToProps = (state) =>
+{
+    return { isSignedIn: state.auth.isSignedIn };
+}
+
+export default connect(mapStateToProps, { signIn, signOut })(GoogleAuth)
