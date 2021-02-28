@@ -596,3 +596,32 @@ export default (state = [], action) =>
     }
 }
 ```
+
+# Redux DevTools
+- Following will enable the Redux dev tools extension
+```js
+import { createStore, applyMiddleware, compose } from "redux";
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(
+    reducers, 
+    composeEnhancers( applyMiddleware() )
+);
+```
+
+## Persisted state values (series of actions) via Dev Tools
+
+- Just put this query string in URL and reload the page.
+- URL?debug_session=nameThisState
+- Now when you hit the above URL you will get these session values.
+
+```php
+// Stored session when logged in
+http://localhost:3000?debug_session=whenLoggedIn
+
+
+// Stored session when logged Out
+http://localhost:3000?debug_session=whenLoggedOut
+```
+
+
+

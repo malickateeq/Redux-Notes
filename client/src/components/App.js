@@ -8,7 +8,8 @@ import StreamEdit from "./streams/StreamEdit";
 import StreamDelete from "./streams/StreamDelete";
 import StreamShow from "./streams/StreamShow";
 
-export default function App() {
+export default function App() 
+{
     return (
         <div>
             <BrowserRouter>
