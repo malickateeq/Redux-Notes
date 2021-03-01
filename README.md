@@ -4,6 +4,32 @@
 - Redux is a state management library. It handles React state for entire app rahter then for a single component.
 - It can work with other languages and libraries, not just for React.
 
+# Redux DevTools
+- Following will enable the Redux dev tools extension
+```js
+import { createStore, applyMiddleware, compose } from "redux";
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(
+    reducers, 
+    composeEnhancers( applyMiddleware() )
+);
+```
+
+## Persisted state values (series of actions) via Dev Tools
+
+- Just put this query string in URL and reload the page.
+- URL?debug_session=nameThisState
+- Now when you hit the above URL you will get these session values.
+
+```php
+// Stored session when logged in
+http://localhost:3000?debug_session=whenLoggedIn
+
+
+// Stored session when logged Out
+http://localhost:3000?debug_session=whenLoggedOut
+```
+
 # General
 
 ## `async` `await`
@@ -33,6 +59,7 @@ hello().then(console.log);  // Hello
 ## Named export
 - A named export allows us to export many functions from a single file.
 - To achieve this just place `export` keyword before each function.
+- To renamed the named export: import {reducer as formReducer} from "redux-form";
 ```js
 export const myFunc = (){};
 ```
@@ -597,31 +624,61 @@ export default (state = [], action) =>
 }
 ```
 
-# Redux DevTools
-- Following will enable the Redux dev tools extension
+## Forms With Redux
+
+- Installation: `npm install --save redux-form`
+- Useful Reference: [Redux-Forms][https://redux-form.com/8.3.0/docs/gettingstarted.md]
+
+- Flow:
+First three parts done by the Redux Form Library
+1. Redux Form Reducer ==> 2. ReduxForm(mapStateToProps, actionCreators) ==> 3. Component (props, handler) ==> 4. DOM (value, onChange)
+
+### Configuring Redux Forms
+
+1. Wire-up ReduxForm reducers with our store
 ```js
-import { createStore, applyMiddleware, compose } from "redux";
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(
-    reducers, 
-    composeEnhancers( applyMiddleware() )
-);
+// In reducers/index.js
+import { reducer } from "redux-form";
+export default combineRedcuers({
+  ... ,
+  form: reducer // we will use `form` as store variable.
+});
 ```
 
-## Persisted state values (series of actions) via Dev Tools
+2. Create a Form
 
-- Just put this query string in URL and reload the page.
-- URL?debug_session=nameThisState
-- Now when you hit the above URL you will get these session values.
+```js
+import { reduxForm, Field } from "redux-form";  // 1st: function, 2nd: component
+class StreamCreate extends Component 
+{
+    renderInput(formProps)
+    {
+        // console.log(formProps);
+        return (
+            <input 
+                className="form-control" 
+                onChange={formProps.input.onChange} 
+                value={formProps.input.value}
 
-```php
-// Stored session when logged in
-http://localhost:3000?debug_session=whenLoggedIn
+                // Or just use this to add all properties
+                {...formProps.input}
+            />
+        );
+    }
+    render() {
+        return (
+            <div>
+              <Field 
+                name="title" 
+                component={this.renderInput}  {/* Redux Form will send automatically a few props */}
+              />
+            </div>
+        )
+    }
+}
+export default reduxForm({
+    form: "createStream",  // Form name under reducer `form` can be many.
+})(StreamCreate);
+// This will inject many props in your component
 
-
-// Stored session when logged Out
-http://localhost:3000?debug_session=whenLoggedOut
 ```
-
-
-
