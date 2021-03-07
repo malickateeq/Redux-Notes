@@ -682,3 +682,46 @@ export default reduxForm({
 // This will inject many props in your component
 
 ```
+
+3. Submit a Form
+
+- `handleSubmit` is the prop function provided by the Redux-Form library to handle submit requests.
+```js
+// Our function for validations, api requests etc.
+onSubmit(formValues)
+{
+    
+}
+
+// onSubmit={this.props.handleSubmit(this.onSubmit)}
+// Function provided by package: this.props.handleSubmit
+// Our function for any further validations.
+<form onSubmit={this.props.handleSubmit(this.onSubmit)}>
+</form>
+```
+
+4. Form Validation checks
+
+- Declare this `validate` function outside of class
+- After validation redux automatically rerenders our component.
+```js
+const validate = (formValues) => 
+{
+    const errors = {};
+    if(!formValues.title){
+        errors.title = "Please enter title";
+    }
+    if(!formValues.description){
+        errors.description = "Please enter description";
+    }
+
+    // Return an empty object where redux-form thinks all validations errors are passed. 
+    return errors;
+}
+
+// Then pass this validation function to tell the redux-form to use this function for valdiation
+export default reduxForm({
+    form: "create-stream",  // Form name
+    validate: validate
+})(StreamCreate);
+```
