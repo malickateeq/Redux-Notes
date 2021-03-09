@@ -11,7 +11,7 @@ import StreamShow from "./streams/StreamShow";
 export default function App() 
 {
     return (
-        <div>
+        <div className="container">
             <BrowserRouter>
                 <Header />
                 <div>
