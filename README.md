@@ -118,6 +118,47 @@ const colors = ['red', 'green', 'blue'];
 colors.find(color => color === blue); // Will return 'blue'
 ```
 
+## Key Interpolation
+```js
+const animalSounds = { cat: 'meow', dog: 'bark' };
+
+const animal = 'lion';
+const sound = 'roar';
+
+{ ...animalSounds, [animal]: sound }
+// { cat: 'meow', dog: 'bark', lion: 'roar' }
+
+// Same for manipulating indexes
+```
+
+## `mapKeys` Lodash function
+- `mapKeys` is a function that will take in an array and will return an object. 
+- It will take an attribute from array and use it as a key.
+```js
+data = [
+  [
+    id: 12,
+    name: 'malik',
+  ]
+];
+mapKeys(data, 'id');
+{
+  // At 12th index
+  "12": {
+    id: 12,
+    name: 'malik'
+  }
+}
+// OR
+mapKeys(data, 'name');
+{
+  // At 12th index
+  "malik": {
+    id: 12,
+    name: 'malik'
+  }
+}
+```
 
 # Redux Cycle
 
@@ -725,3 +766,8 @@ export default reduxForm({
     validate: validate
 })(StreamCreate);
 ```
+
+## REST APIs
+
+- Pro Tip: It is better to use {} base data in reducers then [], because it is easier to interact with objects.
+
