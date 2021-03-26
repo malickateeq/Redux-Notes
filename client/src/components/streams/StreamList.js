@@ -1,10 +1,44 @@
 import React from "react";
 import { connect } from "react-redux";
 import { fetchStreams } from "../../actions";
+import { Link } from "react-router-dom";
 
 class StreamList extends React.Component {
   componentDidMount() {
     this.props.fetchStreams();
+  }
+
+  renderAdmin(stream){
+    if(stream.userId === this.props.currentUserId)
+    {
+      return (
+          <div className="row">
+              <div className="col">
+                <Link className="w-100 btn btn-lg btn-outline-primary" to={`stream/edit/${stream.id}`}>
+                  Edit
+                </Link>
+              </div>
+              <div className="col">
+                <Link className="w-100 btn btn-lg btn-outline-danger" to={`stream/delete/${stream.id}`}>
+                  Delete
+                </Link>
+              </div>
+          </div>
+      );
+    }
+  }
+
+  renderCreate(){
+    if(this.props.isSignedIn)
+    {
+      return (
+        <div>
+          <Link className="btn btn-primary" to="stream/new">
+            Create Stream
+          </Link>
+        </div>
+      );
+    }
   }
 
   renderList() {
@@ -12,7 +46,7 @@ class StreamList extends React.Component {
     {
         return (
             <div className="col-md-6" key={stream.id}>
-                <div className="card mb-4 shadow-sm">
+                <div className="card mb-4 shadow-sm py-3">
                     <div className="card-header">
                         <h4 className="my-0 fw-normal">{stream.title}</h4>
                     </div>
@@ -22,20 +56,11 @@ class StreamList extends React.Component {
                         </h1>
                         <p> { stream.description } </p>
 
-                        <div className="row">
-                            <div className="col">
-                                <button type="button" className="w-100 btn btn-lg btn-outline-primary">
-                                Edit
-                                </button>
-                            </div>
-                            <div className="col">
-                                <button type="button" className="w-100 btn btn-lg btn-outline-danger">
-                                Delete
-                                </button>
-                            </div>
-                        </div>
-
+                        { this.renderAdmin(stream) }
                     </div>
+
+                    { this.renderCreate() }
+
                 </div>
             </div>
         );
@@ -57,7 +82,11 @@ class StreamList extends React.Component {
 
 const mapStateToProps = (state) => {
   // Object.values(state.streams): Get values from object "state.streams" and insert then into an "Array".
-  return { streams: Object.values(state.streams) };
+  return { 
+        streams: Object.values(state.streams),
+        currentUserId: state.auth.userId,
+        isSignedIn: state.auth.isSignedIn
+    };
 };
 
 export default connect(mapStateToProps, { fetchStreams })(StreamList);

@@ -90,6 +90,25 @@ name; // Output: Malik; It remains the same
 // So no need to worry about mutation in strings or nunbers only in objects and array mutation is possible.
 ```
 
+## Component/Record Selection Aproaches
+1. Reducer-based selection. (Action Create => Dispatch => Load Record)
+2. URL-based selection. (URL/:id => Capture URL => Load :id record)
+```js
+  // 1. Define Route
+  <Route path="/stream/edit/:id" exact component={StreamEdit} />
+
+  // Create Link
+  <Link className="w-100 btn btn-lg btn-outline-primary" to={`stream/edit/${stream.id}`}>
+    Edit
+  </Link>
+
+  // In component get URL param
+  props.match.params.id
+```
+
+* Pro Tips!
+- With ReachRouter, each component needs to be designed to work in isolation (fetch its own data!)
+
 ## Comparisons in JS (Pro)
 
 - In strings and numbers === compares values.
@@ -111,6 +130,28 @@ numbers === [1, 2, 3]; // Output: false
 - memoize is an helper function of lodash library.
 - It execute network request for a function only once with the same arguments.
 - Next time memoize return the already fetched response.
+
+## Progammatic Navigation
+- The only challenging part is to get access or reference to the `history` object.
+- The bette solution is to create a dedicated BrowserHistory object inside project files. And use it.
+- Create a new file `history.js` in src/
+- `history/createBrowserHistory` package was installed automatically with `react-router-dom`
+```js
+// 1. history.js file
+import createHistory from "history/createBrowserHistory";
+export default createHistory();
+
+// 2. Configure History with BrowserRouter warpper in App.js
+// i. Use this instead of default
+import history from "../history";
+<BrowserRouter history={history}>...</BrowserRouter>
+// ii. Use Router instead of BrowserRouter
+import {Router, Route} from "react-router-dom";
+<Router history={history}>...</Router>
+// ii. Usage
+import history from "../history";
+history.push("/");
+```
 
 ## `find` method in JS
 ```js
