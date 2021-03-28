@@ -48,7 +48,9 @@ class StreamList extends React.Component {
             <div className="col-md-6" key={stream.id}>
                 <div className="card mb-4 shadow-sm py-3">
                     <div className="card-header">
-                        <h4 className="my-0 fw-normal">{stream.title}</h4>
+                      <Link className="my-0 fw-normal" to={`streams/${stream.id}`}>
+                        <h4>{stream.title}</h4>
+                      </Link>
                     </div>
                     <div className="card-body">
                         <h1 className="card-title pricing-card-title">
