@@ -70,7 +70,7 @@ class StreamList extends React.Component {
   render() {
     return (
       <div>
-        <div className="row row-cols-1 row-cols-md-3 mb-3 text-center">
+        <div className="row text-center">
             <div className="row">
                 { this.renderList() }
             </div>

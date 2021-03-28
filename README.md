@@ -812,3 +812,22 @@ export default reduxForm({
 
 - Pro Tip: It is better to use {} base data in reducers then [], because it is easier to interact with objects.
 
+![RESTful APIs](public/git/rest.png)
+
+## React Portals
+- To not render the components in normal hierarchy rahter tell a component to render another JSX/component anywhere else.
+
+- Sample Portal
+```js
+import React from 'react';
+import ReactDOM from "react-dom";
+
+const Modal = (props) => {
+    return ReactDOM.createPortal(
+        // Some JSX
+        ,
+        // Target element to render
+    );
+}
+export default Modal;
+```
